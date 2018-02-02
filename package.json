@@ -1,0 +1,75 @@
+{
+  "name": "shipit-gs",
+  "version": "0.0.0-alpha",
+  "description": "Set of deployment tasks for Shipit based on git and gsutil commands. ",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/randym/shipit-gs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/randym/shipit-gs/issues"
+  },
+  "keywords": [
+    "shipit",
+    "deploy",
+    "task"
+  ],
+  "author": "Randy Morgan<digital.ipseity@gmail.com>",
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "files": [
+    "index.js",
+    "tasks",
+    "lib"
+  ],
+  "main": "./lib/shipit-gs.bundle.js",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "prepublish": "npm run build",
+    "lint": "eslint ./src --max-warnings 0",
+    "esdoc": "esdoc -c esdoc.json",
+    "test": "jest --config config.json",
+    "test-ci": "jest --config config.json --coverage"
+  },
+  "homepage": "https://github.com/randym/shipit-gs",
+  "devDependencies": {
+    "shipit-cli": "latest",
+    "babel-core": "^6.26.0",
+    "babel-preset-shopify": "^16.2.0",
+    "babel-jest": "^22.1.0",
+    "babel-loader": "^7.1.2",
+    "concurrently": "^3.5.1",
+    "core-js": "^2.5.3",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "esdoc": "^1.0.4",
+    "eslint": "^4.16.0",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-shopify": "^19.0.0",
+    "jest": "^21.2.1",
+    "webpack": "^3.10.0",
+    "typescript": "*"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "chalk": "^2.3.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
+    "path2": "^0.1.0",
+    "shipit-utils": "^1.4.0"
+  },
+  "eslintConfig": {
+    "extends": "plugin:shopify/esnext",
+    "env": {}
+  },
+  "babel": {
+    "presets": [
+      [
+        "shopify/web"
+      ]
+    ]
+  }
+}

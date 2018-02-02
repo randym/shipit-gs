@@ -1,0 +1,5 @@
+# shipit-gs
+
+## License
+
+MIT
