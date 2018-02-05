@@ -14,7 +14,7 @@ describe('deploy:update task', () => {
     },
     default: {
       dirToCopy: 'dist',
-      deployTo: 'webapp',
+      gsDeployTo: 'webapp',
       keepReleases: 5,
     },
   });

@@ -9,7 +9,7 @@ describe('n:init task', () => {
   shipit.initConfig({
     test: {
       gsBucket: 'some-thing',
-      deployTo: 'opt/app',
+      gsDeployTo: 'opt/app',
     },
   });
 

@@ -18,7 +18,7 @@ describe('rollback:update task', () => {
       gsBucket: 'gs://re-qa-turtle-rels-web',
     },
     default: {
-      deployTo: 'webapp',
+      gsDeployTo: 'webapp',
     },
   });
 
