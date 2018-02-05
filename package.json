@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/randym/shipit-gs",
   "devDependencies": {
+    "marked": "~> 0.3.9",
     "shipit-cli": "latest",
     "babel-core": "^6.26.0",
     "babel-preset-shopify": "^16.2.0",
