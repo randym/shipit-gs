@@ -20,7 +20,7 @@ export default function update(shipit) {
 
 
     const current = util.format(RSYNC_TO_CURRENT, shipit.config.dirToCopy, shipit.currentPath);
-    const release = util.format(RSYNC_TO_RELEASE, shipit.config.dirToCopy, shipit.currentPath, timestamp);
+    const release = util.format(RSYNC_TO_RELEASE, shipit.config.currentPath, shipit.releasesPath, timestamp);
 
     return shipit.local(current).then(() => {
       return shipit.local(release);
