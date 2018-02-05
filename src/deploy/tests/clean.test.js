@@ -22,9 +22,12 @@ describe('deploy:clean task', () => {
     shipit.local = jest.fn((command) => {
       if (command.match(/ rm /)) {
         const parts = command.split(' ');
-        // magic number 4 is -r in the gsutil command to remove
-        const files = parts.slice(4);
-        response.splice(response.length - files.length);
+        const hyphenRIndex = parts.indexOf('-r');
+        const files = parts.slice(hyphenRIndex + 1);
+        files.forEach((file) => {
+          const fileIndex = response.indexOf(file);
+          response.splice(fileIndex, 1);
+        });
       }
 
       return Promise.resolve({stdout: response.join('\n')});
@@ -50,7 +53,7 @@ describe('deploy:clean task', () => {
       if (err) { done(err); }
       expect(shipit.local.mock.calls).toEqual([
         ['gsutil ls -d gs://re-qa-turtle-rels-web/webapp/releases/*'],
-        ['gsutil -m rm -r gs://re-qa-turtle-rels-web/webapp/releases/2/ gs://re-qa-turtle-rels-web/webapp/releases/1/'],
+        ['gsutil -m -q rm -r gs://re-qa-turtle-rels-web/webapp/releases/2/ gs://re-qa-turtle-rels-web/webapp/releases/1/'],
       ]);
       expect(response.length).toEqual(shipit.config.keepReleases);
       done();

@@ -3,7 +3,7 @@ import util from 'util';
 
 const MESSAGE = 'Keeping "%d" last releases, cleaning others';
 const RELEASES_CMD = 'gsutil ls -d %s/*';
-const REMOVE = 'gsutil -m rm -r %s';
+const REMOVE = 'gsutil -m -q rm -r %s';
 
 /**
  * registers deploy:clean task to remove any releases that exceed the configured keepReleases.
