@@ -1,9 +1,9 @@
 import moment from 'moment';
 import Shipit from 'shipit-cli';
 import Update from './../update';
-import Init from './../init';
+import Init from './../../shared/init';
 
-describe('deploy:update tast', () => {
+describe('deploy:update task', () => {
   const shipit = new Shipit({
     environment: 'test',
   });
@@ -20,7 +20,7 @@ describe('deploy:update tast', () => {
   });
 
   Update(shipit);
-  Init(shipit);
+  Init(shipit, 'gs-deploy');
 
   beforeEach(() => {
     shipit.local = jest.fn(() => {
@@ -42,7 +42,7 @@ describe('deploy:update tast', () => {
   });
 
   test('it copies the dirToCopy to remote current', (done) => {
-    shipit.start(['deploy:init', 'deploy:update'], (err) => {
+    shipit.start(['gs-deploy:init', 'gs-deploy:update'], (err) => {
       if (err) {
         done(err);
       }
@@ -52,7 +52,7 @@ describe('deploy:update tast', () => {
   });
 
   test('it copies current to a timestamp release', (done) => {
-    shipit.start(['deploy:init', 'deploy:update'], (err) => {
+    shipit.start(['gs-deploy:init', 'gs-deploy:update'], (err) => {
       if (err) {
         done(err);
       }

@@ -11,7 +11,7 @@ const REMOVE = 'gsutil -m rm -r %s';
  */
 export default function clean(shipit) {
 
-  utils.registerTask(shipit, 'deploy:clean', task);
+  utils.registerTask(shipit, 'gs-deploy:clean', task);
 
   function task() {
 

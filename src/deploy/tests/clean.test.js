@@ -44,7 +44,7 @@ describe('deploy:clean task', () => {
   });
 
   test('exectutes the expected commands on remote', (done) => {
-    shipit.start('deploy:clean', (err) => {
+    shipit.start('gs-deploy:clean', (err) => {
       if (err) {
         done(err);
       }

@@ -7,7 +7,7 @@ const COPY_TO_RELEASE = 'gsutil -m cp -r %s %s/%d';
 
 export default function update(shipit) {
 
-  utils.registerTask(shipit, 'deploy:update', task);
+  utils.registerTask(shipit, 'gs-deploy:update', task);
 
   function task() {
     const timestamp = moment.utc().format('YYYYMMDDHHmmss');

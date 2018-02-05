@@ -28,7 +28,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "lint": "eslint ./src --max-warnings 0",
     "esdoc": "esdoc -c esdoc.json",
     "test": "jest --config config.json",
@@ -59,7 +59,8 @@
     "lodash": "^4.17.4",
     "moment": "^2.20.1",
     "path2": "^0.1.0",
-    "shipit-utils": "^1.4.0"
+    "shipit-utils": "^1.4.0",
+    "url": "^0.11.0"
   },
   "eslintConfig": {
     "extends": "plugin:shopify/esnext",

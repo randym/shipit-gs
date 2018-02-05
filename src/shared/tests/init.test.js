@@ -1,7 +1,7 @@
 import Shipit from 'shipit-cli';
 import Init from './../init';
 
-describe('deploy:init task', () => {
+describe('n:init task', () => {
   const shipit = new Shipit({
     environment: 'test',
   });
@@ -13,11 +13,11 @@ describe('deploy:init task', () => {
     },
   });
 
-  Init(shipit);
+  Init(shipit, 'n');
 
 
   test('creates the currentPath', (done) => {
-    shipit.start('deploy:init', (err) => {
+    shipit.start('n:init', (err) => {
       if (err) {
         done(err);
       }
@@ -27,7 +27,7 @@ describe('deploy:init task', () => {
   });
 
   test('creates releasesPath', (done) => {
-    shipit.start('deploy:init', (err) => {
+    shipit.start('n:init', (err) => {
       if (err) {
         done(err);
       }
