@@ -46,7 +46,7 @@ describe('deploy:update task', () => {
       if (err) {
         done(err);
       }
-      expect(shipit.local.mock.calls[0][0]).toEqual('gsutil -m cp -r dist/* gs:///some-bucket/webapp/current');
+      expect(shipit.local.mock.calls[0][0]).toEqual('gsutil -m -q cp -r dist/* gs:///some-bucket/webapp/current');
       done();
     });
   });
@@ -56,7 +56,7 @@ describe('deploy:update task', () => {
       if (err) {
         done(err);
       }
-      expect(shipit.local.mock.calls[1][0]).toEqual('gsutil -m cp -r gs:///some-bucket/webapp/current gs:///some-bucket/webapp/releases/19700101000000');
+      expect(shipit.local.mock.calls[1][0]).toEqual('gsutil -m -q cp -r gs:///some-bucket/webapp/current gs:///some-bucket/webapp/releases/19700101000000');
       done();
     });
   });

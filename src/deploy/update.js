@@ -2,8 +2,8 @@ import utils from 'shipit-utils';
 import util from 'util';
 import moment from 'moment';
 
-const COPY_TO_CURRENT = 'gsutil -m cp -r %s/* %s';
-const COPY_TO_RELEASE = 'gsutil -m cp -r %s %s/%d';
+const COPY_TO_CURRENT = 'gsutil -m -q cp -r %s/* %s';
+const COPY_TO_RELEASE = 'gsutil -m -q cp -r %s %s/%d';
 
 export default function update(shipit) {
 
