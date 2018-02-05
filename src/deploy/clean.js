@@ -15,28 +15,30 @@ export default function clean(shipit) {
 
   function task() {
 
-    const keepReleases = shipit.config.keepReleases;
-    shipit.log(MESSAGE, keepReleases);
+    shipit.log(MESSAGE, shipit.config.keepReleases);
 
-    return getReleases()
-      .then((releases) => {
-        return releases.slice(keepReleases).join(' ');
-      })
+    return getOldReleases()
       .then((remove) => {
-        return shipit.local(util.format(REMOVE, remove));
+        if (remove) {
+          return shipit.local(util.format(REMOVE, remove));
+        } else {
+          return false;
+        }
       })
-      .then(() => {
-        return getReleases();
-      })
-      .then(() => {
-        return shipit.emit('cleaned');
+      .then((removed) => {
+        return shipit.emit(util.format('Cleaned %s', removed));
       });
   }
-  function getReleases() {
+
+  function getOldReleases() {
     const command = util.format(RELEASES_CMD, shipit.releasesPath);
 
     return shipit.local(command).then((result) => {
-      return result.stdout.replace(/\n$/, '').split('\n');
+      return result.stdout.replace(/\n$/, '')
+        .split('\n')
+        .reverse()
+        .slice(shipit.config.keepReleases)
+        .join(' ');
     });
   }
 }

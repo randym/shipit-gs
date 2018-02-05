@@ -10,23 +10,15 @@ describe('deploy:clean task', () => {
 
   Clean(shipit);
 
+  let response = [];
+
   shipit.initConfig({
     test: {
       keepReleases: 4,
-      gsBucket: 'gs://re-qa-turtle-rels-web',
     },
   });
 
-  const response = [
-    'gs://re-qa-turtle-rels-web/webapp/releases/1/',
-    'gs://re-qa-turtle-rels-web/webapp/releases/2/',
-    'gs://re-qa-turtle-rels-web/webapp/releases/3/',
-    'gs://re-qa-turtle-rels-web/webapp/releases/4/',
-    'gs://re-qa-turtle-rels-web/webapp/releases/5/',
-    'gs://re-qa-turtle-rels-web/webapp/releases/6/',
-  ];
-
-  beforeAll(() => {
+  beforeEach(() => {
     shipit.local = jest.fn((command) => {
       if (command.match(/ rm /)) {
         const parts = command.split(' ');
@@ -39,17 +31,50 @@ describe('deploy:clean task', () => {
     });
   });
 
-  afterAll(() => {
+  afterEach(() => {
     shipit.local.mockRestore();
   });
 
-  test('exectutes the expected commands on remote', (done) => {
+  test('removes oldest versions', (done) => {
+
+    response = [
+      'gs://re-qa-turtle-rels-web/webapp/releases/1/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/2/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/3/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/4/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/5/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/6/',
+    ];
+
     shipit.start('gs-deploy:clean', (err) => {
-      if (err) {
-        done(err);
-      }
+      if (err) { done(err); }
+      expect(shipit.local.mock.calls).toEqual([
+        ['gsutil ls -d gs://re-qa-turtle-rels-web/webapp/releases/*'],
+        ['gsutil -m rm -r gs://re-qa-turtle-rels-web/webapp/releases/2/ gs://re-qa-turtle-rels-web/webapp/releases/1/'],
+      ]);
       expect(response.length).toEqual(shipit.config.keepReleases);
       done();
     });
   });
+
+
+  test('does not try to remove when we have not met keepReleases', (done) => {
+
+    response = [
+      'gs://re-qa-turtle-rels-web/webapp/releases/3/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/4/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/5/',
+      'gs://re-qa-turtle-rels-web/webapp/releases/6/',
+    ];
+
+    shipit.start('gs-deploy:clean', (err) => {
+      if (err) { done(err); }
+      expect(shipit.local.mock.calls).toEqual([
+        ['gsutil ls -d gs://re-qa-turtle-rels-web/webapp/releases/*'],
+      ]);
+      expect(response.length).toEqual(shipit.config.keepReleases);
+      done();
+    });
+  });
+
 });
