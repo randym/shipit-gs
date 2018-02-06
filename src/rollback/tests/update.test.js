@@ -1,6 +1,6 @@
 import Shipit from 'shipit-cli';
 import Update from './../update';
-import Init from './../../shared/Init';
+import Init from './../../shared/init';
 
 describe('rollback:update task', () => {
   const shipit = new Shipit({

@@ -1,14 +1,14 @@
-jest.mock('../../shared/init');
-jest.mock('../update');
-jest.mock('../clean');
-jest.mock('../../shared/finished');
-
 import utils from 'shipit-utils';
 import Deploy from './../index';
 import init from '../../shared/init';
 import update from '../update';
 import clean from '../clean';
 import finished from '../../shared/finished';
+
+jest.mock('../../shared/init');
+jest.mock('../update');
+jest.mock('../clean');
+jest.mock('../../shared/finished');
 
 describe('deploy', () => {
   const shipit = {};
