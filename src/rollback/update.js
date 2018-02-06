@@ -11,7 +11,7 @@ const NAME = 'gs-rollback:update';
  * registers rollback:update task to remove the latest release and make the previous one active.
  * @param {Object} shipit An instance of shipit
  */
-export default function clean(shipit) {
+export default function update(shipit) {
 
   utils.registerTask(shipit, NAME, task);
 
@@ -19,17 +19,6 @@ export default function clean(shipit) {
     return getReleases()
       .then(configureReleases)
       .then(doRollback);
-  }
-
-  function configureReleases(releases) {
-    if (releases.length < 2) {
-      throw new Error(util.format(ERR_NO_RELEASES, releases.join('\n')));
-    }
-
-    return {
-      remove: releases.pop(),
-      rollback: releases.pop(),
-    };
   }
 
   function doRollback(releases) {
@@ -50,4 +39,13 @@ export default function clean(shipit) {
   }
 }
 
+function configureReleases(releases) {
+  if (releases.length < 2) {
+    throw new Error(util.format(ERR_NO_RELEASES, releases.join('\n')));
+  }
+  return {
+    remove: releases.pop(),
+    rollback: releases.pop(),
+  };
+}
 
