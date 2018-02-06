@@ -1,6 +1,6 @@
 {
   "name": "shipit-gs",
-  "version": "0.0.0-alpha",
+  "version": "0.0.0-beta",
   "description": "Set of deployment tasks for Shipit using gsutil commands. ",
   "repository": {
     "type": "git",

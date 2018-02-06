@@ -1,7 +1,6 @@
 import utils from 'shipit-utils';
 import util from 'util';
 import moment from 'moment';
-import instrument from '../shared/instrument';
 
 const COPY_TO_CURRENT = 'gsutil -m -q cp -r %s/* %s';
 const COPY_TO_RELEASE = 'gsutil -m -q cp -r %s %s/%d';
@@ -16,7 +15,7 @@ const NAME = 'gs-deploy:update';
 
 export default function update(shipit) {
 
-  utils.registerTask(shipit, NAME, instrument(shipit, task, NAME));
+  utils.registerTask(shipit, NAME, task);
 
   function task() {
     const timestamp = moment.utc().format('YYYYMMDDHHmmss');

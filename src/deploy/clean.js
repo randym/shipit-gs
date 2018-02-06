@@ -1,6 +1,5 @@
 import utils from 'shipit-utils';
 import util from 'util';
-import instrument from '../shared/instrument';
 
 const MESSAGE = 'Keeping "%d" last releases, cleaning others';
 const RELEASES_CMD = 'gsutil ls -d %s/*';
@@ -13,7 +12,7 @@ const NAME = 'gs-deploy:clean';
  */
 export default function clean(shipit) {
 
-  utils.registerTask(shipit, NAME, instrument(shipit, task, NAME));
+  utils.registerTask(shipit, NAME, task);
 
   function task() {
 
