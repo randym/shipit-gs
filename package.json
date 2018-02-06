@@ -1,7 +1,7 @@
 {
   "name": "shipit-gs",
   "version": "0.0.0-alpha",
-  "description": "Set of deployment tasks for Shipit based on git and gsutil commands. ",
+  "description": "Set of deployment tasks for Shipit using gsutil commands. ",
   "repository": {
     "type": "git",
     "url": "https://github.com/randym/shipit-gs.git"
@@ -12,7 +12,8 @@
   "keywords": [
     "shipit",
     "deploy",
-    "task"
+    "task",
+    "Google Storage"
   ],
   "author": "Randy Morgan<digital.ipseity@gmail.com>",
   "license": "MIT",
