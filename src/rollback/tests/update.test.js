@@ -10,6 +10,7 @@ describe('rollback:update task', () => {
   shipit.releasesPath = 'gs://re-qa-turtle-rels-web/webapp/releases';
 
   Update(shipit);
+
   Init(shipit, 'gs-rollback');
 
   shipit.initConfig({
