@@ -1,10 +1,12 @@
 import utils from 'shipit-utils';
 import util from 'util';
+import instrument from '../shared/instrument';
 
 const ERR_NO_RELEASES = 'There must be at least two releases to rollback.\nfound:\n%s';
 const RELEASES = 'gsutil ls -d %s/*';
 const COPY_TO_CURRENT = 'gsutil -m cp -r %s* %s';
 const REMOVE = 'gsutil -m rm -r %s';
+const NAME = 'gs-rollback:update';
 
 /**
  * registers rollback:update task to remove the latest release and make the previous one active.
@@ -12,7 +14,7 @@ const REMOVE = 'gsutil -m rm -r %s';
  */
 export default function clean(shipit) {
 
-  utils.registerTask(shipit, 'gs-rollback:update', task);
+  utils.registerTask(shipit, NAME, instrument(shipit, task, NAME));
 
   function task() {
     return getReleases()

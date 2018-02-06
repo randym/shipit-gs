@@ -1,12 +1,12 @@
-jest.mock('../../shared/init');
-jest.mock('../update');
-jest.mock('../../shared/finished');
-
 import utils from 'shipit-utils';
 import Rollback from './../index';
 import init from '../../shared/init';
 import update from '../update';
 import finished from '../../shared/finished';
+
+jest.mock('../../shared/init');
+jest.mock('../update');
+jest.mock('../../shared/finished');
 
 describe('deploy', () => {
   const shipit = {};
@@ -24,7 +24,6 @@ describe('deploy', () => {
 
   });
 
-
   test('init with shipit and  namespace', () => {
     expect(init.mock.calls[0][0]).toEqual(shipit, 'rollback');
   });
@@ -36,7 +35,6 @@ describe('deploy', () => {
   test('finished with shipit and namespace', () => {
     expect(finished.mock.calls[0][0]).toEqual(shipit, 'rollback');
   });
-
 
   test('registers tasks', () => {
     expect(utils.registerTask.mock.calls[0][0]).toEqual(shipit, 'rollback', [

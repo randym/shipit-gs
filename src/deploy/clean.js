@@ -1,9 +1,11 @@
 import utils from 'shipit-utils';
 import util from 'util';
+import instrument from '../shared/instrument';
 
 const MESSAGE = 'Keeping "%d" last releases, cleaning others';
 const RELEASES_CMD = 'gsutil ls -d %s/*';
 const REMOVE = 'gsutil -m -q rm -r %s';
+const NAME = 'gs-deploy:clean';
 
 /**
  * registers deploy:clean task to remove any releases that exceed the configured keepReleases.
@@ -11,7 +13,7 @@ const REMOVE = 'gsutil -m -q rm -r %s';
  */
 export default function clean(shipit) {
 
-  utils.registerTask(shipit, 'gs-deploy:clean', task);
+  utils.registerTask(shipit, NAME, instrument(shipit, task, NAME));
 
   function task() {
 
@@ -26,7 +28,7 @@ export default function clean(shipit) {
         }
       })
       .then((removed) => {
-        return shipit.emit(util.format('Cleaned %s', removed));
+        return shipit.log(util.format('Cleaned %s', removed));
       });
   }
 
