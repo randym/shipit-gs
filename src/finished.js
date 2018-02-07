@@ -5,7 +5,7 @@ import utils from 'shipit-utils';
  * @param {Object} shipit An instance of shipit
  * @param {String} namespace The prefix used when registering individual tasks
  */
-export default function init(shipit, namespace) {
+export default function finished(shipit, namespace) {
   utils.registerTask(shipit, `${namespace}:finished`, task);
 
   function task() {

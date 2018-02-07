@@ -5,6 +5,7 @@ import path from 'path2/posix';
 /**
  * registers deploy:init task to configure currentPath and releasesPath.
  * @param {Object} shipit An instance of shipit
+ * @param {String} namespace The namespace to apply to this task instance
  */
 export default function init(shipit, namespace) {
   utils.registerTask(shipit, `${namespace}:init`, task);

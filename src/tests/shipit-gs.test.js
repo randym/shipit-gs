@@ -1,9 +1,9 @@
-jest.mock('../deploy/');
-jest.mock('../rollback/');
-
-import rollback from '../rollback/';
-import deploy from '../deploy/';
+import rollback from '../rollback';
+import deploy from '../deploy';
 import ShipitGS from '../shipit-gs';
+
+jest.mock('../deploy');
+jest.mock('../rollback');
 
 describe('deploy', () => {
   const shipit = {};
@@ -13,8 +13,8 @@ describe('deploy', () => {
   });
 
   afterAll(() => {
-    jest.unmock('../deploy/');
-    jest.unmock('../rollback/');
+    jest.unmock('../deploy');
+    jest.unmock('../rollback');
   });
 
   test('deploy with shipit', () => {

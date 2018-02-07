@@ -1,19 +1,29 @@
 import utils from 'shipit-utils';
 import util from 'util';
+import init from './init';
+import finished from './finished';
 
+const NAMESPACE = 'gs-rollback';
 const ERR_NO_RELEASES = 'There must be at least two releases to rollback.\nfound:\n%s';
 const RELEASES = 'gsutil ls -d %s/*';
 const COPY_TO_CURRENT = 'gsutil -m cp -r %s* %s';
 const REMOVE = 'gsutil -m rm -r %s';
-const NAME = 'gs-rollback:update';
 
 /**
- * registers rollback:update task to remove the latest release and make the previous one active.
+ * registers gs-rollback task, initializing and orchestrating gs-rollback namepaced tasks for init, update and finished.
  * @param {Object} shipit An instance of shipit
  */
-export default function update(shipit) {
+export default function rollback(shipit) {
+  init(shipit, NAMESPACE);
+  finished(shipit, NAMESPACE);
 
-  utils.registerTask(shipit, NAME, task);
+  utils.registerTask(shipit, NAMESPACE, [
+    `${NAMESPACE}:init`,
+    `${NAMESPACE}:update`,
+    `${NAMESPACE}:finished`,
+  ]);
+
+  utils.registerTask(shipit, `${NAMESPACE}:update`, task);
 
   function task() {
     return getReleases()
@@ -22,11 +32,11 @@ export default function update(shipit) {
   }
 
   function doRollback(releases) {
-    const rollback = util.format(COPY_TO_CURRENT, releases.rollback, shipit.currentPath);
-    const remove = util.format(REMOVE, releases.remove);
+    const gsutilRollback = util.format(COPY_TO_CURRENT, releases.rollback, shipit.currentPath);
+    const gsutilRemove = util.format(REMOVE, releases.remove);
 
-    return shipit.local(rollback).then(() => {
-      return shipit.local(remove);
+    return shipit.local(gsutilRollback).then(() => {
+      return shipit.local(gsutilRemove);
     });
   }
 

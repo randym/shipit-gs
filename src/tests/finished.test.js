@@ -21,11 +21,10 @@ describe('n:finish task', () => {
       if (err) {
         done(err);
       }
+      const squashed = shipit.emit.mock.calls.map((call) => { return call[0]; });
+      expect(squashed).toContain('n:finished');
       done();
     });
-
-    const squashed = shipit.emit.mock.calls.map((call) => { return call[0]; });
-    expect(squashed).toContain('n:finished');
   });
 });
 
