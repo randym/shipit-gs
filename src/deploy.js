@@ -32,30 +32,30 @@ export default function deploy(shipit) {
     const timestamp = moment.utc().format('YYYYMMDDHHmmss');
     const current = util.format(COPY_TO_CURRENT, shipit.config.dirToCopy, shipit.currentPath);
     const release = util.format(COPY_TO_RELEASE, shipit.currentPath, shipit.releasesPath, timestamp);
+    const allReleases = util.format(RELEASES_CMD, shipit.releasesPath);
 
     return shipit.local(current)
       .then(() => {
         return shipit.local(release);
       })
-      .then(getOldReleases)
+      .then(() => {
+        return shipit.local(allReleases);
+      })
+      .then((response) => {
+        return getOldReleases(response, shipit.config.keepReleases);
+      })
       .then((remove) => {
-        if (remove) {
-          return shipit.local(util.format(REMOVE, remove));
-        } else {
-          return false;
-        }
+        return remove ? shipit.local(util.format(REMOVE, remove)) : false;
       });
   }
-  function getOldReleases() {
-    const command = util.format(RELEASES_CMD, shipit.releasesPath);
-
-    return shipit.local(command).then((result) => {
-      return result.stdout.replace(/\n$/, '')
-        .split('\n')
-        .reverse()
-        .slice(shipit.config.keepReleases)
-        .join(' ');
-    });
-  }
 }
+
+function getOldReleases(response, keep) {
+  return response.stdout.replace(/\n$/, '')
+    .split('\n')
+    .reverse()
+    .slice(keep)
+    .join(' ');
+}
+
 
