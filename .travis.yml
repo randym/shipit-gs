@@ -8,5 +8,7 @@ before_script:
   - ./cc-test-reporter before-build
 node_js:
   - "9"
+script:
+  "npm run test-ci"
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
