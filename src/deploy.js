@@ -13,49 +13,54 @@ const RELEASES_CMD = 'gsutil ls -d %s/*';
 const REMOVE = 'gsutil -m -q rm -r %s';
 
 /**
- * registers gs-deploy task, initializing and orchestrating deploy namepaced tasks for init, update clean and finished.
+ * registers gs-deploy task which will publish the dirToCopy configuration to current and
+ * generate a timestamped release. Finally, old releases will be culled so that we only keep
+ * the configured keepReleases.
  * @param {Object} shipit An instance of shipit
  */
 export default function deploy(shipit) {
   init(shipit, NAMESPACE);
   finished(shipit, NAMESPACE);
+  utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
+    return copyToCurrent(shipit)
+      .then(copyToRelease)
+      .then(removeOldReleases);
+  });
 
   utils.registerTask(shipit, NAMESPACE, [
     `${NAMESPACE}:init`,
     `${NAMESPACE}:update`,
     `${NAMESPACE}:finished`,
   ]);
-
-  utils.registerTask(shipit, `${NAMESPACE}:update`, task);
-
-  function task() {
-    const timestamp = moment.utc().format('YYYYMMDDHHmmss');
-    const current = util.format(COPY_TO_CURRENT, shipit.config.dirToCopy, shipit.currentPath);
-    const release = util.format(COPY_TO_RELEASE, shipit.currentPath, shipit.releasesPath, timestamp);
-    const allReleases = util.format(RELEASES_CMD, shipit.releasesPath);
-
-    return shipit.local(current)
-      .then(() => {
-        return shipit.local(release);
-      })
-      .then(() => {
-        return shipit.local(allReleases);
-      })
-      .then((response) => {
-        return getOldReleases(response, shipit.config.keepReleases);
-      })
-      .then((remove) => {
-        return remove ? shipit.local(util.format(REMOVE, remove)) : false;
-      });
-  }
 }
 
-function getOldReleases(response, keep) {
-  return response.stdout.replace(/\n$/, '')
-    .split('\n')
-    .reverse()
-    .slice(keep)
-    .join(' ');
+function copyToCurrent(shipit) {
+  const command = util.format(COPY_TO_CURRENT, shipit.config.dirToCopy, shipit.currentPath);
+  return shipit.local(command).then(() => {
+    return shipit;
+  });
 }
 
+function copyToRelease(shipit) {
+  const timestamp = moment.utc().format('YYYYMMDDHHmmss');
+  const command = util.format(COPY_TO_RELEASE, shipit.currentPath, shipit.releasesPath, timestamp);
+  return shipit.local(command).then(() => {
+    return shipit;
+  });
+}
+
+function removeOldReleases(shipit) {
+  const command = util.format(RELEASES_CMD, shipit.releasesPath);
+  return shipit.local(command)
+    .then((response) => {
+      return response.stdout.replace(/\n$/, '')
+        .split('\n')
+        .reverse()
+        .slice(shipit.config.keepReleases)
+        .join(' ');
+    })
+    .then((remove) => {
+      return remove ? shipit.local(util.format(REMOVE, remove)) : false;
+    });
+}
 
