@@ -1,5 +1,6 @@
 import utils from 'shipit-utils';
 import util from 'util';
+
 import init from './init';
 import finished from './finished';
 
@@ -10,52 +11,47 @@ const COPY_TO_CURRENT = 'gsutil -m cp -r %s* %s';
 const REMOVE = 'gsutil -m rm -r %s';
 
 /**
- * registers gs-rollback task, initializing and orchestrating gs-rollback namepaced tasks for init, update and finished.
+ * registers gs-rollback task which will remove the latest release and make the previous release current.
+ * Note that an error is thrown if there are fewer than two releases.
  * @param {Object} shipit An instance of shipit
  */
 export default function rollback(shipit) {
   init(shipit, NAMESPACE);
   finished(shipit, NAMESPACE);
+  utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
+    return getReleases(shipit)
+      .then((releases) => {
+        return doRollback(shipit, releases);
+      });
+  });
 
   utils.registerTask(shipit, NAMESPACE, [
     `${NAMESPACE}:init`,
     `${NAMESPACE}:update`,
     `${NAMESPACE}:finished`,
   ]);
-
-  utils.registerTask(shipit, `${NAMESPACE}:update`, task);
-
-  function task() {
-    return getReleases()
-      .then(configureReleases)
-      .then(doRollback);
-  }
-
-  function doRollback(releases) {
-    const gsutilRollback = util.format(COPY_TO_CURRENT, releases.rollback, shipit.currentPath);
-    const gsutilRemove = util.format(REMOVE, releases.remove);
-
-    return shipit.local(gsutilRollback).then(() => {
-      return shipit.local(gsutilRemove);
-    });
-  }
-
-  function getReleases() {
-    const releases = util.format(RELEASES, shipit.releasesPath);
-
-    return shipit.local(releases).then((result) => {
-      return result.stdout.replace(/\n$/, '').split('\n');
-    });
-  }
 }
 
-function configureReleases(releases) {
+function getReleases(shipit) {
+  const releases = util.format(RELEASES, shipit.releasesPath);
+
+  return shipit.local(releases).then((result) => {
+    return result.stdout.replace(/\n$/, '').split('\n');
+  });
+}
+
+function doRollback(shipit, releases) {
   if (releases.length < 2) {
     throw new Error(util.format(ERR_NO_RELEASES, releases.join('\n')));
   }
-  return {
-    remove: releases.pop(),
-    rollback: releases.pop(),
-  };
+  const removeRelease = releases.pop();
+  const rollbackRelease = releases.pop();
+
+  const gsutilRemove = util.format(REMOVE, removeRelease);
+  const gsutilRollback = util.format(COPY_TO_CURRENT, rollbackRelease, shipit.currentPath);
+
+  return shipit.local(gsutilRollback).then(() => {
+    return shipit.local(gsutilRemove);
+  });
 }
 
