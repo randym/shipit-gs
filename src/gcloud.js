@@ -2,7 +2,7 @@ import util from 'util';
 
 import utils from 'shipit-utils';
 
-const ACTIVATE_CONFIG = 'gclound config configurations activate %s';
+const ACTIVATE_CONFIG = 'gcloud config configurations activate %s';
 
 const CREATE_CONFIG = 'gcloud config configurations create %s --activate';
 const SET_PROJECT = 'gcloud config set project %s';

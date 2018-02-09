@@ -94,7 +94,7 @@ describe('gcloud', () => {
         expect(shipit.local.mock.calls).toEqual([
           ['gcloud info'],
           ['gcloud config configurations list --format="value(name)"'],
-          ['gclound config configurations activate shipit-test'],
+          ['gcloud config configurations activate shipit-test'],
           ['gcloud auth list --filter="status:ACTIVE" --format="value(account)"'],
         ]);
         done(err);
