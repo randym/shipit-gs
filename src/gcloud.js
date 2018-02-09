@@ -1,19 +1,14 @@
 import util from 'util';
-
 import utils from 'shipit-utils';
 
+const GCLOUD = 'gcloud info';
+const GET_CONFIGS = 'gcloud config configurations list --format="value(name)"';
 const ACTIVATE_CONFIG = 'gcloud config configurations activate %s';
-
 const CREATE_CONFIG = 'gcloud config configurations create %s --activate';
 const SET_PROJECT = 'gcloud config set project %s';
 const SET_ACCOUNT = 'gcloud config set account %s';
-
-const GET_CONFIGS = 'gcloud config configurations list --format="value(name)"';
-
 const ACTIVE_ACCOUNT = 'gcloud auth list --filter="status:ACTIVE" --format="value(account)"';
 const LOGIN = 'gcloud auth login %s --brief';
-const GCLOUD = 'gcloud info';
-
 
 export default function gcloud(shipit, namespace) {
   utils.registerTask(shipit, `${namespace}:gcloud`, () => {

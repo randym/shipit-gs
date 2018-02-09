@@ -10,7 +10,7 @@ Shipit-gs is a set of shipit tasks for deployment to Google Cloud Storage.
 
 **What it can do:**
 
-- Automatically create and Google Cloud configurations
+- Automatically create Google Cloud configurations for each environment
 - Deploy a local resource to a [Bucket](https://cloud.google.com/storage/docs/json_api/v1/buckets) on Google Cloud Storage
 - Rollback a deployment
 - Manage multiple releases
@@ -55,6 +55,10 @@ To rollback, run :
 ```
 shipit staging gs-rollback
 ```
+
+## Dependencies
+
+### [Google Cloud SDK](https://cloud.google.com/sdk/downloads)
 
 ## Options
 
