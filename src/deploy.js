@@ -1,8 +1,8 @@
 import util from 'util';
 import moment from 'moment';
-
 import utils from 'shipit-utils';
 
+import gcloud from './gcloud';
 import init from './init';
 import finished from './finished';
 
@@ -22,6 +22,7 @@ const REMOVE = 'gsutil -m -q rm -r %s';
 export default function deploy(shipit) {
   init(shipit, NAMESPACE);
   finished(shipit, NAMESPACE);
+  gcloud(shipit, NAMESPACE);
   utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
     return copyToCurrent(shipit)
       .then(copyToRelease)
@@ -29,7 +30,7 @@ export default function deploy(shipit) {
   });
 
   utils.registerTask(shipit, NAMESPACE, [
-    'gs-gcloud',
+    `${NAMESPACE}:gcloud`,
     `${NAMESPACE}:init`,
     `${NAMESPACE}:update`,
     `${NAMESPACE}:finished`,

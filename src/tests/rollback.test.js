@@ -32,7 +32,7 @@ describe('rollback', () => {
   });
 
   test('registers tasks', () => {
-    expect(shipit.tasks['gs-rollback']).toBeDefined();
+    expect(shipit.tasks['gs-rollback:gcloud']).toBeDefined();
     expect(shipit.tasks['gs-rollback:init']).toBeDefined();
     expect(shipit.tasks['gs-rollback:update']).toBeDefined();
     expect(shipit.tasks['gs-rollback:finished']).toBeDefined();
@@ -45,15 +45,12 @@ describe('rollback', () => {
     ];
 
     shipit.start('gs-rollback', (err) => {
-      if (err) {
-        done(err);
-      }
-      expect(shipit.local.mock.calls).toEqual([
+      expect(shipit.local.mock.calls.slice(-3)).toEqual([
         ['gsutil ls -d gs://my-bucket/webapp/releases/*'],
         ['gsutil -m cp -r gs://my-bucket/webapp/releases/1/* gs://my-bucket/webapp/current'],
         ['gsutil -m rm -r gs://my-bucket/webapp/releases/2/'],
       ]);
-      done();
+      done(err);
     });
   });
 
@@ -62,12 +59,10 @@ describe('rollback', () => {
       'gs://my-bucket/webapp/releases/1/',
     ];
 
-    shipit.start(['gs-rollback:init', 'gs-rollback:update'], (err) => {
+    shipit.start('gs-rollback', (err) => {
       expect(err.message).toEqual('There must be at least two releases to rollback.\nfound:\ngs://my-bucket/webapp/releases/1/');
-      expect(shipit.local.mock.calls).toEqual([
-        ['gsutil ls -d gs://my-bucket/webapp/releases/*'],
-      ]);
-      done();
+      expect(shipit.local).calledWith('gsutil ls -d gs://my-bucket/webapp/releases/*');
+      done(!err);
     });
   });
 });

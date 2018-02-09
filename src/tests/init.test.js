@@ -18,21 +18,15 @@ describe('n:init task', () => {
 
   test('creates the currentPath', (done) => {
     shipit.start('n:init', (err) => {
-      if (err) {
-        done(err);
-      }
-      done();
+      expect(shipit.currentPath).toEqual('gs://some-thing/opt/app/current');
+      done(err);
     });
-    expect(shipit.currentPath).toEqual('gs://some-thing/opt/app/current');
   });
 
   test('creates releasesPath', (done) => {
     shipit.start('n:init', (err) => {
-      if (err) {
-        done(err);
-      }
-      done();
+      expect(shipit.releasesPath).toEqual('gs://some-thing/opt/app/releases');
+      done(err);
     });
-    expect(shipit.releasesPath).toEqual('gs://some-thing/opt/app/releases');
   });
 });

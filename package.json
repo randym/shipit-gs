@@ -68,6 +68,9 @@
     "extends": "plugin:shopify/esnext",
     "env": {}
   },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./scripts/test/setup.js"
+  },
   "babel": {
     "presets": [
       [

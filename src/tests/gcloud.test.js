@@ -22,8 +22,7 @@ describe('gcloud', () => {
       },
     });
 
-    Gcloud(shipit);
-
+    Gcloud(shipit, 'test');
     beforeAll(() => {
       shipit.local = jest.fn((command) => {
         if (command.match('gcloud info')) {
@@ -38,10 +37,10 @@ describe('gcloud', () => {
     });
 
     test('it tries to run gclout info', (done) => {
-      shipit.start('gs-gcloud', (err) => {
-        expect(shipit.local.mock.calls[0][0]).toEqual('gcloud info');
+      shipit.start('test:gcloud', (err) => {
+        expect(shipit.local).calledWith('gcloud info');
         expect(err.message).toEqual('zsh: command not found: gcloud\n');
-        done();
+        done(!err);
       });
     });
   });
@@ -64,7 +63,7 @@ describe('gcloud', () => {
       },
     });
 
-    Gcloud(shipit);
+    Gcloud(shipit, 'test');
 
     beforeAll(() => {
       shipit.local = jest.fn((command) => {
@@ -91,7 +90,7 @@ describe('gcloud', () => {
     });
 
     test('runs the expected commands', (done) => {
-      shipit.start('gs-gcloud', (err) => {
+      shipit.start('test:gcloud', (err) => {
         expect(shipit.local.mock.calls).toEqual([
           ['gcloud info'],
           ['gcloud config configurations list --format="value(name)"'],
@@ -122,7 +121,7 @@ describe('gcloud', () => {
       },
     });
 
-    Gcloud(shipit);
+    Gcloud(shipit, 'test');
 
     beforeAll(() => {
       shipit.local = jest.fn(() => {
@@ -135,7 +134,7 @@ describe('gcloud', () => {
     });
 
     test('runs the expected commands', (done) => {
-      shipit.start('gs-gcloud', (err) => {
+      shipit.start('test:gcloud', (err) => {
         expect(shipit.local.mock.calls).toEqual([
           ['gcloud info'],
           ['gcloud config configurations list --format="value(name)"'],

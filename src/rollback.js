@@ -1,6 +1,7 @@
 import utils from 'shipit-utils';
 import util from 'util';
 
+import gcloud from './gcloud';
 import init from './init';
 import finished from './finished';
 
@@ -18,6 +19,8 @@ const REMOVE = 'gsutil -m rm -r %s';
 export default function rollback(shipit) {
   init(shipit, NAMESPACE);
   finished(shipit, NAMESPACE);
+  gcloud(shipit, NAMESPACE);
+
   utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
     return getReleases(shipit)
       .then((releases) => {
@@ -26,7 +29,7 @@ export default function rollback(shipit) {
   });
 
   utils.registerTask(shipit, NAMESPACE, [
-    'gs-gcloud',
+    `${NAMESPACE}:gcloud`,
     `${NAMESPACE}:init`,
     `${NAMESPACE}:update`,
     `${NAMESPACE}:finished`,

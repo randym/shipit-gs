@@ -2,8 +2,6 @@ import util from 'util';
 
 import utils from 'shipit-utils';
 
-const NAMESPACE = 'gs-gcloud';
-
 const ACTIVATE_CONFIG = 'gclound config configurations activate %s';
 
 const CREATE_CONFIG = 'gcloud config configurations create %s --activate';
@@ -17,8 +15,8 @@ const LOGIN = 'gcloud auth login %s --brief';
 const GCLOUD = 'gcloud info';
 
 
-export default function gcloud(shipit) {
-  utils.registerTask(shipit, NAMESPACE, () => {
+export default function gcloud(shipit, namespace) {
+  utils.registerTask(shipit, `${namespace}:gcloud`, () => {
     return getGcloudInfo(shipit)
       .then(findOrCreateConfig)
       .then(activateAccount);

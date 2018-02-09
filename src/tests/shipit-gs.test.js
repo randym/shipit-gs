@@ -21,15 +21,15 @@ describe('deploy', () => {
   });
 
   test('deploy with shipit', () => {
-    expect(rollback.mock.calls[0][0]).toEqual(shipit);
+    expect(rollback).calledWith(shipit);
   });
 
   test('rollback with shipit', () => {
-    expect(deploy.mock.calls[0][0]).toEqual(shipit);
+    expect(deploy).calledWith(shipit);
   });
 
   test('rollback with shipit', () => {
-    expect(gcloud.mock.calls[0][0]).toEqual(shipit);
+    expect(gcloud).calledWith(shipit);
   });
 });
 

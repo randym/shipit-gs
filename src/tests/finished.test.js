@@ -18,12 +18,8 @@ describe('n:finish task', () => {
 
   test('emits finished event', (done) => {
     shipit.start('n:finished', (err) => {
-      if (err) {
-        done(err);
-      }
-      const squashed = shipit.emit.mock.calls.map((call) => { return call[0]; });
-      expect(squashed).toContain('n:finished');
-      done();
+      expect(shipit.emit).calledWith('n:finished');
+      done(err);
     });
   });
 });
