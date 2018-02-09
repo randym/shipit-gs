@@ -26,7 +26,7 @@ export default function rollback(shipit) {
   });
 
   utils.registerTask(shipit, NAMESPACE, [
-    'gcloud',
+    'gs-gcloud',
     `${NAMESPACE}:init`,
     `${NAMESPACE}:update`,
     `${NAMESPACE}:finished`,
