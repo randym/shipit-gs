@@ -10,14 +10,10 @@ Shipit-gs is a set of shipit tasks for deployment to Google Cloud Storage.
 
 **What it can do:**
 
+- Automatically create and Google Cloud configurations
 - Deploy a local resource to a [Bucket](https://cloud.google.com/storage/docs/json_api/v1/buckets) on Google Cloud Storage
 - Rollback a deployment
 - Manage multiple releases
-
-**What it does _not_ do:**
-
-- Configure Google Cloud Platform
-- Make any assumptions about build/release work flow.
 
 ## Install
 
@@ -37,10 +33,12 @@ module.exports = function (shipit) {
     default: {
       dirToCopy: 'dist',
       gsDeployTo: 'myapp',
+      gsAccount: 'me@shipit-gs',
       keepReleases: 2,
     },
     staging: {
-      gsBucket: 'staging-bucket'
+      gsBucket: 'staging-bucket',
+      gsProject: 'staging-project',
     }
   });
 };
@@ -59,6 +57,18 @@ shipit staging gs-rollback
 ```
 
 ## Options
+
+### gsProject
+
+Type: `String`
+
+The Google Cloud Platform project to use.
+
+### gsAccount
+
+Type: `String`
+
+The Google Cloud Platform account to use.
 
 ### gsDeployTo
 
@@ -81,6 +91,8 @@ The name of the bucket you want to deploy to. The gs:// prefix will be added for
 ## Workflow tasks
 
 - gs-deploy
+  - gs-gcloud
+    - Configure and Authenticate Google Cloud Platform
   - gs-deploy:init
     - Emit event "gs-deploy".
   - gs-deploy:update
@@ -91,6 +103,8 @@ The name of the bucket you want to deploy to. The gs:// prefix will be added for
     - Emit event "gs-deploy:finsihed".
 
 - gs-rollback
+  - gs-gcloud
+    - Configure and Authenticate Google Cloud Platform
   - gs-rollback:init
     - Emit event "gs-rollback".
   - gs-rollback:update
