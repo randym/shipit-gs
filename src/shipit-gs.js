@@ -7,8 +7,8 @@ import gcloud from './gcloud';
  * @param {Object} shipit An instance of shipit
  */
 export default function ShipitGs(shipit) {
+  gcloud(shipit);
   deploy(shipit);
   rollback(shipit);
-  gcloud(shipit);
 }
 

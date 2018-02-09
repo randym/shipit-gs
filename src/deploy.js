@@ -2,6 +2,7 @@ import util from 'util';
 import moment from 'moment';
 
 import utils from 'shipit-utils';
+
 import init from './init';
 import finished from './finished';
 
@@ -28,6 +29,7 @@ export default function deploy(shipit) {
   });
 
   utils.registerTask(shipit, NAMESPACE, [
+    'gs-gcloud',
     `${NAMESPACE}:init`,
     `${NAMESPACE}:update`,
     `${NAMESPACE}:finished`,
