@@ -11,7 +11,7 @@ describe('gcloud', () => {
 
     shipit.initConfig({
       test: {
-        gsProject: 're-cloud',
+        gsProject: 'my-project',
         gsBucket: 'my-bucket',
 
       },
@@ -55,7 +55,7 @@ describe('gcloud', () => {
     shipit.initConfig({
       test: {
         gsAccount: 'me@shipit-gs',
-        gsProject: 're-cloud',
+        gsProject: 'my-project',
         gsBucket: 'my-bucket',
       },
       default: {
