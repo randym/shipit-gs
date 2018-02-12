@@ -1,5 +1,9 @@
 import util from 'util';
 import utils from 'shipit-utils';
+import {
+  promiseChain,
+  stdoutLines,
+} from './helpers';
 
 const GCLOUD = 'gcloud info';
 const GET_CONFIGS = 'gcloud config configurations list --format="value(name)"';
@@ -12,9 +16,12 @@ const LOGIN = 'gcloud auth login %s --brief';
 
 export default function gcloud(shipit, namespace) {
   utils.registerTask(shipit, `${namespace}:gcloud`, () => {
-    return getGcloudInfo(shipit)
-      .then(findOrCreateConfig)
-      .then(activateAccount);
+    return promiseChain([
+      getGcloudInfo,
+      findOrCreateConfig,
+      activateAccount,
+    ],
+    shipit);
   });
 }
 
@@ -49,8 +56,7 @@ function activateAccount(shipit) {
 
 function getConfigurations(shipit) {
   return shipit.local(GET_CONFIGS).then((response) => {
-    return response.stdout.replace(/\n$/, '')
-      .split('\n');
+    return stdoutLines(response);
   });
 }
 

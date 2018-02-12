@@ -6,6 +6,12 @@ import gcloud from './gcloud';
 import init from './init';
 import finished from './finished';
 
+import {
+  registerTaskChain,
+  promiseChain,
+  stdoutLines,
+} from './helpers';
+
 const NAMESPACE = 'gs-deploy';
 
 const COPY_TO_CURRENT = 'gsutil -m -q cp -r %s/* %s';
@@ -23,18 +29,16 @@ export default function deploy(shipit) {
   init(shipit, NAMESPACE);
   finished(shipit, NAMESPACE);
   gcloud(shipit, NAMESPACE);
+
   utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
-    return copyToCurrent(shipit)
-      .then(copyToRelease)
-      .then(removeOldReleases);
+    return promiseChain([
+      copyToCurrent,
+      copyToRelease,
+      removeOldReleases,
+    ], shipit);
   });
 
-  utils.registerTask(shipit, NAMESPACE, [
-    `${NAMESPACE}:gcloud`,
-    `${NAMESPACE}:init`,
-    `${NAMESPACE}:update`,
-    `${NAMESPACE}:finished`,
-  ]);
+  registerTaskChain(shipit, NAMESPACE);
 }
 
 function copyToCurrent(shipit) {
@@ -56,8 +60,7 @@ function removeOldReleases(shipit) {
   const command = util.format(RELEASES_CMD, shipit.releasesPath);
   return shipit.local(command)
     .then((response) => {
-      return response.stdout.replace(/\n$/, '')
-        .split('\n')
+      return stdoutLines(response)
         .reverse()
         .slice(shipit.config.keepReleases)
         .join(' ');

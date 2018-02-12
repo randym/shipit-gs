@@ -1,11 +1,14 @@
 import utils from 'shipit-utils';
 import util from 'util';
-
 import gcloud from './gcloud';
 import init from './init';
 import finished from './finished';
+import {
+  registerTaskChain,
+} from './helpers';
 
 const NAMESPACE = 'gs-rollback';
+
 const ERR_NO_RELEASES = 'There must be at least two releases to rollback.\nfound:\n%s';
 const RELEASES = 'gsutil ls -d %s/*';
 const COPY_TO_CURRENT = 'gsutil -m cp -r %s* %s';
@@ -28,12 +31,7 @@ export default function rollback(shipit) {
       });
   });
 
-  utils.registerTask(shipit, NAMESPACE, [
-    `${NAMESPACE}:gcloud`,
-    `${NAMESPACE}:init`,
-    `${NAMESPACE}:update`,
-    `${NAMESPACE}:finished`,
-  ]);
+  registerTaskChain(shipit, NAMESPACE);
 }
 
 function getReleases(shipit) {
