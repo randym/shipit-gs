@@ -1,3 +1,4 @@
+import inquirer from 'inquirer';
 import Shipit from 'shipit-cli';
 import Gcloud from './../gcloud';
 
@@ -18,7 +19,6 @@ describe('gcloud', () => {
       default: {
         dirToCopy: 'dist',
         gsDeployTo: 'webapp',
-        gsAccount: 'me@shipit-gs',
       },
     });
 
@@ -53,7 +53,6 @@ describe('gcloud', () => {
 
     shipit.initConfig({
       test: {
-        gsAccount: 'me@shipit-gs',
         gsProject: 'my-project',
         gsBucket: 'my-bucket',
       },
@@ -66,12 +65,21 @@ describe('gcloud', () => {
     Gcloud(shipit, 'test');
 
     beforeAll(() => {
+      inquirer.prompt = jest.fn(() => {
+        return Promise.resolve({account: 'me@shipit-gs'});
+      });
+
       shipit.local = jest.fn((command) => {
         if (command.match('gcloud info')) {
           return Promise.resolve({stdout: 'gcloud info - output'});
         }
-        if (command.match('configurations list')) {
-          return Promise.resolve({stdout: 'shipit-test\n'});
+
+        if (command.match(/value\(name\)/)) {
+          return Promise.resolve({stdout: 'my-bucket\n'});
+        }
+
+        if (command.match(/value\(ACCOUNT\)/)) {
+          return Promise.resolve({stdout: 'me@shipit-gs'});
         }
 
         if (command.match('configurations activate')) {
@@ -87,6 +95,7 @@ describe('gcloud', () => {
 
     afterAll(() => {
       shipit.local.mockRestore();
+      inquirer.prompt.mockRestore();
     });
 
     test('runs the expected commands', (done) => {
@@ -94,8 +103,9 @@ describe('gcloud', () => {
         expect(shipit.local.mock.calls).toEqual([
           ['gcloud info'],
           ['gcloud config configurations list --format="value(name)"'],
-          ['gcloud config configurations activate shipit-test'],
-          ['gcloud auth list --filter="status:ACTIVE" --format="value(account)"'],
+          ['gcloud config configurations activate my-bucket'],
+          ['gcloud config configurations list --filter="is_active:true" --format="value(ACCOUNT)"'],
+          ['gcloud auth login me@shipit-gs --brief'],
         ]);
         done(err);
       });
@@ -103,7 +113,7 @@ describe('gcloud', () => {
   });
 
 
-  describe('configuration exists', () => {
+  describe('configuration does not exist', () => {
     const shipit = new Shipit({
       environment: 'test',
     });
@@ -111,7 +121,6 @@ describe('gcloud', () => {
 
     shipit.initConfig({
       test: {
-        gsAccount: 'me@shipit-gs',
         gsProject: 'my-project',
         gsBucket: 'my-bucket',
       },
@@ -124,13 +133,20 @@ describe('gcloud', () => {
     Gcloud(shipit, 'test');
 
     beforeAll(() => {
-      shipit.local = jest.fn(() => {
-        return Promise.resolve({stdout: '\n'});
+      shipit.local = jest.fn((command) => {
+        if (command.match('auth list')) {
+          return Promise.resolve({stdout: 'me@shipit-gs\n'});
+        }
+        return Promise.resolve({stdout: ''});
+      });
+      inquirer.prompt = jest.fn(() => {
+        return Promise.resolve({account: 'me@shipit-gs'});
       });
     });
 
     afterAll(() => {
       shipit.local.mockRestore();
+      inquirer.prompt.mockRestore();
     });
 
     test('runs the expected commands', (done) => {
@@ -138,8 +154,9 @@ describe('gcloud', () => {
         expect(shipit.local.mock.calls).toEqual([
           ['gcloud info'],
           ['gcloud config configurations list --format="value(name)"'],
-          ['gcloud config configurations create shipit-test --activate && gcloud config set project my-project && gcloud config set account me@shipit-gs'],
-          ['gcloud auth list --filter="status:ACTIVE" --format="value(account)"'],
+          ['gcloud config configurations create my-bucket --activate && gcloud config set project my-project'],
+          ['gcloud auth list --format="value(account)"'],
+          ['gcloud config set account me@shipit-gs'],
           ['gcloud auth login me@shipit-gs --brief'],
         ]);
         done(err);

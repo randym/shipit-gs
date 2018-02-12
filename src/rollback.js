@@ -5,6 +5,8 @@ import init from './init';
 import finished from './finished';
 import {
   registerTaskChain,
+  stdoutLines,
+  promiseChain,
 } from './helpers';
 
 const NAMESPACE = 'gs-rollback';
@@ -27,7 +29,13 @@ export default function rollback(shipit) {
   utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
     return getReleases(shipit)
       .then((releases) => {
-        return doRollback(shipit, releases);
+        if (releases.length < 2) {
+          throw new Error(util.format(ERR_NO_RELEASES, releases.join('\n')));
+        }
+        return removeRelease(shipit, releases);
+      })
+      .then((releases) => {
+        return copyToCurrent(shipit, releases.pop());
       });
   });
 
@@ -36,24 +44,20 @@ export default function rollback(shipit) {
 
 function getReleases(shipit) {
   const releases = util.format(RELEASES, shipit.releasesPath);
-
-  return shipit.local(releases).then((result) => {
-    return result.stdout.replace(/\n$/, '').split('\n');
+  return shipit.local(releases).then((response) => {
+    return stdoutLines(response);
   });
 }
 
-function doRollback(shipit, releases) {
-  if (releases.length < 2) {
-    throw new Error(util.format(ERR_NO_RELEASES, releases.join('\n')));
-  }
-  const removeRelease = releases.pop();
-  const rollbackRelease = releases.pop();
-
-  const gsutilRemove = util.format(REMOVE, removeRelease);
-  const gsutilRollback = util.format(COPY_TO_CURRENT, rollbackRelease, shipit.currentPath);
-
-  return shipit.local(gsutilRollback).then(() => {
-    return shipit.local(gsutilRemove);
+function removeRelease(shipit, releases) {
+  const gsutilRemove = util.format(REMOVE, releases.pop());
+  return shipit.local(gsutilRemove).then(() => {
+    return releases;
   });
+}
+
+function copyToCurrent(shipit, release) {
+  const gsutilRollback = util.format(COPY_TO_CURRENT, release, shipit.currentPath);
+  return shipit.local(gsutilRollback);
 }
 

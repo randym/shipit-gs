@@ -1,5 +1,7 @@
 import moment from 'moment';
 import Shipit from 'shipit-cli';
+import inquirer from 'inquirer';
+
 import Deploy from './../deploy';
 
 describe('deploy', () => {
@@ -23,7 +25,30 @@ describe('deploy', () => {
   Deploy(shipit);
 
   beforeEach(() => {
+    inquirer.prompt = jest.fn(() => {
+      return Promise.resolve({account: 'me@shipit-gs'});
+    });
+
     shipit.local = jest.fn((command) => {
+      if (command.match('gcloud info')) {
+        return Promise.resolve({stdout: 'gcloud info - output'});
+      }
+
+      if (command.match(/value\(name\)/)) {
+        return Promise.resolve({stdout: 'my-bucket\n'});
+      }
+
+      if (command.match(/value\(ACCOUNT\)/)) {
+        return Promise.resolve({stdout: 'me@shipit-gs'});
+      }
+
+      if (command.match('configurations activate')) {
+        return Promise.resolve({stdout: 'activated\n'});
+      }
+
+      if (command.match('auth list')) {
+        return Promise.resolve({stdout: 'me@shipit-gs\n'});
+      }
       if (command.match(/ rm /)) {
         const parts = command.split(' ');
         const hyphenRIndex = parts.indexOf('-r');

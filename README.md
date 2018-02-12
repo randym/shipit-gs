@@ -33,7 +33,6 @@ module.exports = function (shipit) {
     default: {
       dirToCopy: 'dist',
       gsDeployTo: 'myapp',
-      gsAccount: 'me@shipit-gs',
       keepReleases: 2,
     },
     staging: {
@@ -67,12 +66,6 @@ shipit staging gs-rollback
 Type: `String`
 
 The Google Cloud Platform project to use.
-
-### gsAccount
-
-Type: `String`
-
-The Google Cloud Platform account to use.
 
 ### gsDeployTo
 

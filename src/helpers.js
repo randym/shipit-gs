@@ -19,5 +19,6 @@ export function promiseChain(members, ...args) {
 }
 
 export function stdoutLines(response) {
-  return response.stdout.replace(/\n$/, '').split('\n');
+  const stripped = response.stdout.replace(/\n$/, '');
+  return stripped.length ? stripped.split('\n') : [];
 }
