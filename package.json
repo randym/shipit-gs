@@ -63,7 +63,7 @@
     "path2": "^0.1.0",
     "shipit-utils": "^1.4.0",
     "url": "^0.11.0",
-    "inquirer": "latest"
+    "inquirer": "^5.1.0"
   },
   "eslintConfig": {
     "extends": "plugin:shopify/esnext",

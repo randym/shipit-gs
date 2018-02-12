@@ -9,7 +9,6 @@ describe('gcloud', () => {
       environment: 'test',
     });
 
-
     shipit.initConfig({
       test: {
         gsProject: 'my-project',
@@ -112,12 +111,10 @@ describe('gcloud', () => {
     });
   });
 
-
   describe('configuration does not exist', () => {
     const shipit = new Shipit({
       environment: 'test',
     });
-
 
     shipit.initConfig({
       test: {

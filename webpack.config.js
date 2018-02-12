@@ -30,6 +30,7 @@ function createConfig({name, filename = name, source, path = ''}) {
         },
       ],
     },
+    target: 'node',
   };
 }
 
