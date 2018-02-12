@@ -132,7 +132,7 @@ describe('gcloud', () => {
     beforeAll(() => {
       shipit.local = jest.fn((command) => {
         if (command.match('auth list')) {
-          return Promise.resolve({stdout: 'me@shipit-gs\n'});
+          return Promise.resolve({stdout: ''});
         }
         return Promise.resolve({stdout: ''});
       });
@@ -151,7 +151,8 @@ describe('gcloud', () => {
         expect(shipit.local.mock.calls).toEqual([
           ['gcloud info'],
           ['gcloud config configurations list --format="value(name)"'],
-          ['gcloud config configurations create my-bucket --activate && gcloud config set project my-project'],
+          ['gcloud config configurations create my-bucket --activate'],
+          ['gcloud config set project my-project'],
           ['gcloud auth list --format="value(account)"'],
           ['gcloud config set account me@shipit-gs'],
           ['gcloud auth login me@shipit-gs --brief'],

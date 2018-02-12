@@ -66,19 +66,25 @@ function activateConfig(shipit, configName) {
 }
 
 function createConfig(shipit, configName) {
-  const commands = [
-    util.format(CREATE_CONFIG, configName),
-    util.format(SET_PROJECT, shipit.config.gsProject),
-  ];
-  return shipit.local(commands.join(' && ')).then(() => {
-    return selectAccount(shipit);
-  });
+  return shipit.local(util.format(CREATE_CONFIG, configName))
+    .then(() => {
+      return shipit.local(util.format(SET_PROJECT, shipit.config.gsProject));
+    })
+    .then(() => {
+      return selectAccount(shipit);
+    });
 }
 
 function selectAccount(shipit) {
   return getAccounts(shipit)
     .then((accounts) => {
       return chooseAccount(shipit, accounts);
+    })
+    .then((account) => {
+      return setAccount(shipit, account);
+    })
+    .then((account) => {
+      return login(shipit, account);
     });
 }
 
@@ -113,12 +119,6 @@ function chooseAccount(shipit, accounts) {
   }])
     .then((choice) => {
       return choice.account === 'other' ? getNewAccountName() : choice.account;
-    })
-    .then((account) => {
-      return setAccount(shipit, account);
-    })
-    .then((account) => {
-      return login(shipit, account);
     });
 }
 
