@@ -85,7 +85,7 @@ describe('deploy', () => {
 
   test('it copies the dirToCopy to remote current', (done) => {
     shipit.start(['gs-deploy'], (err) => {
-      expect(shipit.local).calledWith('gsutil -m -q cp -r dist/* gs://my-bucket/webapp/current');
+      expect(shipit.local).calledWith('gsutil -m -q cp -r dist/** gs://my-bucket/webapp/current/');
       done(err);
     });
   });

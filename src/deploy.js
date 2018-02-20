@@ -14,7 +14,7 @@ import {
 
 const NAMESPACE = 'gs-deploy';
 
-const COPY_TO_CURRENT = 'gsutil -m -q cp -r %s/* %s';
+const COPY_TO_CURRENT = 'gsutil -m -q cp -r %s/** %s/';
 const COPY_TO_RELEASE = 'gsutil -m -q cp -r %s %s/%d';
 const RELEASES_CMD = 'gsutil ls -d %s/*';
 const REMOVE = 'gsutil -m -q rm -r %s';
