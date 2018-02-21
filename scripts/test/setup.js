@@ -1,12 +1,15 @@
 expect.extend({
   calledWith(received, argument) {
 
-    const message = `expected ${received} to include ${argument}`;
-    const found = received.mock.calls.find((call) => {
-      return call[0] === argument;
+    const calls = received.mock.calls.map((call) => {
+      return call[0];
     });
 
-    const pass = found && (found.length > 0);
+    function message() {
+      return `expected ["${calls.join('", "')}"] to include ${argument}`;
+    }
+
+    const pass = (calls.indexOf(argument) > -1);
 
     return {
       message,

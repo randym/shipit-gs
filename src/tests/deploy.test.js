@@ -15,6 +15,7 @@ describe('deploy', () => {
     test: {
       keepReleases: 4,
       gsBucket: 'my-bucket',
+      cacheControl: 'no-cache',
     },
     default: {
       dirToCopy: 'dist',
@@ -86,6 +87,13 @@ describe('deploy', () => {
   test('it copies the dirToCopy to remote current', (done) => {
     shipit.start(['gs-deploy'], (err) => {
       expect(shipit.local).calledWith('gsutil -m -q cp -r dist/** gs://my-bucket/webapp/current/');
+      done(err);
+    });
+  });
+
+  test('it applies cache control', (done) => {
+    shipit.start(['gs-deploy'], (err) => {
+      expect(shipit.local).calledWith('gsutil -m -q setmeta -r -h "Cache-Control:no-cache" gs://my-bucket/webapp/current');
       done(err);
     });
   });

@@ -18,6 +18,7 @@ const COPY_TO_CURRENT = 'gsutil -m -q cp -r %s/** %s/';
 const COPY_TO_RELEASE = 'gsutil -m -q cp -r %s %s/%d';
 const RELEASES_CMD = 'gsutil ls -d %s/*';
 const REMOVE = 'gsutil -m -q rm -r %s';
+const CACHE_CONTROL = 'gsutil -m -q setmeta -r -h "Cache-Control:%s" %s';
 
 /**
  * registers gs-deploy task which will publish the dirToCopy configuration to current and
@@ -33,12 +34,25 @@ export default function deploy(shipit) {
   utils.registerTask(shipit, `${NAMESPACE}:update`, () => {
     return promiseChain([
       copyToCurrent,
+      cacheControl,
       copyToRelease,
       removeOldReleases,
     ], shipit);
   });
 
   registerTaskChain(shipit, NAMESPACE);
+}
+
+function cacheControl(shipit) {
+  if (!shipit.config.cacheControl) {
+    return shipit;
+  }
+
+  const command = util.format(CACHE_CONTROL, shipit.config.cacheControl, shipit.currentPath);
+
+  return shipit.local(command).then(() => {
+    return shipit;
+  });
 }
 
 function copyToCurrent(shipit) {
